@@ -1,3 +1,5 @@
+#include <utility>
+
 template<typename T, int N>
 class vec
 {
@@ -30,6 +32,11 @@ class vec
     //     data{args...}
     // {}
 
+    // template <typename... Args>
+    // requires(sizeof...(Args) == N && (std::convertible_to<Args, T> && ...))
+    // explicit vec_n(Args&&... args) noexcept
+    // : data{static_cast<T>(args)...} {}
+    
     vec<T, N> operator+(const vec<T, N>& v1){
         vec<T, N> res;
         for(int i = 0; i < N; i++){
@@ -41,7 +48,7 @@ class vec
     vec<T, N> operator-(const vec<T, N>& v1){
         vec res;
         for(int i = 0; i < N; i++){
-            res.data[i] = this->data[i] - v1.data[i];
+            res.data[i] = this->data[i] - v1[i];
         }
         return res;
     }
@@ -57,7 +64,7 @@ class vec
     T operator*(const vec<T, N>& v1){
         T res = 0;
         for(int i = 0; i < N; i++){
-            res += this->data[i] * v1.data[i];
+            res += this->data[i] * v1[i];
         }
         return res;
     }
@@ -72,3 +79,30 @@ class vec
 
 };
 
+template<typename T, int N>
+vec<T, N> operator*(const vec<T, N>& v, const T& a){
+        vec<T, N> res;
+        for(int i = 0; i < N; i++){
+            res[i] = v[i]*a;
+        }
+        return res;
+    }
+
+template<typename T, int N>
+vec<T, N> operator*(const T& a, const vec<T, N>& v){
+        vec<T, N> res;
+        for(int i = 0; i < N; i++){
+            res[i] = v[i]*a;
+        }
+        return res;
+    }
+
+template<typename T, int N>
+std::ostream& operator << (std::ostream &os, const vec<T, N>& v){
+    std::ostream& res = os << "(" << v[0];
+    for(int i = 1; i < N; i++){
+        res << ", " << v[i];
+    }
+    res << ")";
+    return res;
+}
