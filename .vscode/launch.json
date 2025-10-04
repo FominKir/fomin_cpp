@@ -15,6 +15,18 @@
               "trace": true
             },
             "showDisplayString": true
+          },
+          {
+            "name": "Release",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "C:\\Users\\Raywud\\Documents\\cpp_prog\\fomin_cpp\\build\\Release\\proj.exe",
+            "externalConsole": false,
+            "logging": {
+              "moduleLoad": false,
+              "trace": true
+            },
+            "showDisplayString": true
           }
     ]
 }

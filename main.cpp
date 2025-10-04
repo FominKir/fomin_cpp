@@ -1,10 +1,22 @@
 #include <iostream>
 #include <fstream>
+
 #include "complex.h"
 #include "Rect.h"
 #include "bmp.h"
-#include "vec.h"
+// #include "vec.h"
 #include <vector>
+// #include "Ray.h"
+
+#include "thread/thread_pool.h"
+
+#include "RayMarching/Camera.h"
+#include "RayMarching/LightSource.h"
+#include "RayMarching/Material.h"
+#include "RayMarching/Object.h"
+#include "RayMarching/Ray.h"
+#include "RayMarching/Scene.h"
+#include "RayMarching/Texture.h"
 
 #pragma pack(pop)
 RGB nToColor(int n){
@@ -107,26 +119,81 @@ void Calc(BMP& b, const Rect<float> space){
     }
 }
 
-int main() {    
-    std::ofstream file("C:\\Users\\Raywud\\Documents\\cpp_prog\\fomin_cpp\\Fractal.bmp", std::ios::binary);
+void mainBMP() {    
+    // std::ofstream file("C:\\Users\\Raywud\\Documents\\cpp_prog\\fomin_cpp\\Fractal.bmp", std::ios::binary);
     std::ofstream fileRGB("C:\\Users\\Raywud\\Documents\\cpp_prog\\fomin_cpp\\RGBLine.bmp", std::ios::binary);
-    BMP bm(1920, 1080);
+    // BMP bm(1920, 1080);
     BMP bmRGB(256, 10);
     for(int j = 0; j<10; j++){
         for(int i = 0; i<256; i++){
-            bmRGB.SetPixel(i, j, nToColor(i));
+            bmRGB.SetPixel(i, j, sky(i));
         }
     }
 
     
-    Calc(bm, Rect<float>(-0.75, -0.9, -0.3, -0.3));
+    // Calc(bm, Rect<float>(-0.75, -0.9f, -0.3f, -0.3f));
     // Calc(bm, Rect<float>(-2, -1, 1, 1));
     
 
-    bm.write(file);
+    // bm.write(file);
     bmRGB.write(fileRGB);
+    
+}
+
+#include "RayMarching/Scene.h"
+#include "RayMarching/Camera.h"
+
+void f(int i) {
+    std::cout << i << std::endl;
+}
+
+int main(){
+
+    Texture defaultTexture;
+    Texture redTexture(RGB{255, 0, 0});
+    Texture greenTexture(RGB{0, 255, 0});
+    Texture blueTexture(RGB{0, 0, 255});
+
+    Material defaultMaterial(defaultTexture);
+    Material redMaterial(0.0f, 0.5f, 0.75f, redTexture);
+    Material greenMaterial(greenTexture);
+    Material blueMaterial(blueTexture);
+    Material glass(0.0f, 1.0f, 0.75f, defaultTexture);
+
+    //текстурные менеджеры
+
+    Scene scene1;
+    scene1.skyBoxOn();
+
+    std::unique_ptr<LightSource> ligth1(new PointLightSource(vec3(50, -100, 50), 0.8f, RGB{200, 200, 200}));
+    std::unique_ptr<LightSource> ligthGlobal(new GlobalLight(vec3(-20.0f, -20.0f, 10.0f), 0.5f, RGB{200, 200, 100}));
+
+    scene1.addLight(ligth1);
+    // scene1.addLight(ligthGlobal);
+
+    std::unique_ptr<Object> pSphere1(new Sphere(vec3(0, 100, 5), 10, &blueMaterial));
+    scene1.addObject(pSphere1);
+
+    std::unique_ptr<Object> pPlane1(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), &defaultMaterial));
+    scene1.addObject(pPlane1);
+
+    std::unique_ptr<Object> pBox1(new Box(vec3(0, 10, 5), vec3(5, 15, 10), &defaultMaterial));
+    scene1.addObject(pBox1);
+ 
+    Camera camera1(vec3(0,-20,5), vec3(0, 1, 0), vec3(0,0,1), 800, 600, 400, 75);
+    camera1.bmpOutput(scene1);
+    // {
+    // thread_pool tp(5);
+
+    // tp.add_task(f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
+    // }
+
 
 
     return 0;
-    
 }
+
+
+
+
+//cmake --build build --config Release

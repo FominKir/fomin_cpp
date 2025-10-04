@@ -32,12 +32,12 @@ TEST(VecTests, dif){
     EXPECT_EQ(-5.5f, vDif[1]);
 }
 
-TEST(VecTests, prod){
-    vec<float, 2> v1(0.5f, 4.5f);
-    vec<float, 2> v2(3.0f, 10.0f);
-    float prod = v1 * v2;
-    EXPECT_EQ(46.5f, prod);
-}
+// TEST(VecTests, prod){
+//     vec<float, 2> v1(0.5f, 4.5f);
+//     vec<float, 2> v2(3.0f, 10.0f);
+//     float prod = v1 * v2;
+//     EXPECT_EQ(46.5f, prod);
+// }
 
 TEST(VecTests, negative1){
     vec<float, 2> v1(0.5f, 4.5f);

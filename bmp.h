@@ -42,7 +42,19 @@ struct RGB {
         g = gi;
         b = bi;
     }
+    RGB(const RGB& color){
+        r = color.r;
+        g = color.g;
+        b = color.b;
+    }
 };
+
+RGB sumRGB(const RGB& col1, const RGB& col2);
+RGB cutRGB(const RGB& color, const RGB& light);
+RGB operator*(const RGB& color, float brightness);
+RGB operator*(float brightness, const RGB& color);
+RGB sky(int n);
+RGB skyBlur(int n);
 
 class BMP{
     private:

@@ -1,3 +1,6 @@
+#include <iostream>
+
+#pragma once
 #include <utility>
 
 template<typename T, int N>
@@ -9,6 +12,12 @@ class vec
     public:
     vec() = default;
     ~vec() = default;
+
+    explicit vec(T a){
+        for (auto& e: data){
+            e = a;
+        }
+    }
 
     vec(T a, T b){
         data[0] = a;
@@ -33,9 +42,8 @@ class vec
     // {}
 
     // template <typename... Args>
-    // requires(sizeof...(Args) == N && (std::convertible_to<Args, T> && ...))
-    // explicit vec_n(Args&&... args) noexcept
-    // : data{static_cast<T>(args)...} {}
+    // vec(Args... args) noexcept:
+    //     data{static_cast<T>(args)...} {}
     
     vec<T, N> operator+(const vec<T, N>& v1){
         vec<T, N> res;
@@ -45,29 +53,29 @@ class vec
         return res;
     }
 
-    vec<T, N> operator-(const vec<T, N>& v1){
-        vec res;
-        for(int i = 0; i < N; i++){
-            res.data[i] = this->data[i] - v1[i];
-        }
-        return res;
-    }
+    // vec<T, N> operator-(const vec<T, N>& v1){
+    //     vec res;
+    //     for(int i = 0; i < N; i++){
+    //         res[i] = this->data[i] - v1[i];
+    //     }
+    //     return res;
+    // }
 
     vec<T, N> operator-(){
         vec res;
         for(int i = 0; i < N; i++){
-            res.data[i] = - this->data[i];
+            res[i] = - this->data[i];
         }
         return res;
     }
 
-    T operator*(const vec<T, N>& v1){
-        T res = 0;
-        for(int i = 0; i < N; i++){
-            res += this->data[i] * v1[i];
-        }
-        return res;
-    }
+    // vec<T, N> operator*(const vec<T, N>& v1) const{
+    //     vec<T, N> res;
+    //     for(int i = 0; i < N; i++){
+    //         res[i] = this->data[i] * v1[i];
+    //     }
+    //     return res;
+    // }
 
     const T& operator[](int i) const{
         return data[i];
@@ -80,7 +88,25 @@ class vec
 };
 
 template<typename T, int N>
-vec<T, N> operator*(const vec<T, N>& v, const T& a){
+vec<T, N> operator-(const vec<T, N>& v1, const vec<T, N>& v2){
+        vec<T, N> res;
+        for(int i = 0; i < N; i++){
+            res[i] = v1[i] - v2[i];
+        }
+        return res;
+    }
+
+template<typename T, int N>
+vec<T, N> operator*(const vec<T, N>& v1, const vec<T, N>& v2){
+        vec<T, N> res;
+        for(int i = 0; i < N; i++){
+            res[i] = v1[i] * v2[i];
+        }
+        return res;
+    }
+
+template<typename T, int N>
+vec<T, N> operator*(const vec<T, N>& v, T a){
         vec<T, N> res;
         for(int i = 0; i < N; i++){
             res[i] = v[i]*a;
@@ -89,10 +115,19 @@ vec<T, N> operator*(const vec<T, N>& v, const T& a){
     }
 
 template<typename T, int N>
-vec<T, N> operator*(const T& a, const vec<T, N>& v){
+vec<T, N> operator*(T a, const vec<T, N>& v){
         vec<T, N> res;
         for(int i = 0; i < N; i++){
             res[i] = v[i]*a;
+        }
+        return res;
+    }
+
+template<typename T, int N>
+vec<T, N> operator/(const vec<T, N>& v, const T& a){
+        vec<T, N> res;
+        for(int i = 0; i < N; i++){
+            res[i] = v[i]/a;
         }
         return res;
     }
@@ -106,3 +141,5 @@ std::ostream& operator << (std::ostream &os, const vec<T, N>& v){
     res << ")";
     return res;
 }
+
+using vec3 = vec<float, 3>;
